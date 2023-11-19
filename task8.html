@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 8</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      body {
+        background-color: #405468;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+      }
+      .header {
+        max-width: 1425px;
+        margin: 0 auto;
+        background-color: #00bd82;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 30px;
+      }
+      .header > p {
+        font-size: 24px;
+      }
+      .content {
+        max-width: 900px;
+        margin: 10px auto;
+        background-color: #00bd82;
+        border-radius: 10px;
+        text-align: center;
+        padding: 5px 0;
+        font-size: 24px;
+      }
+      .btn {
+        max-width: 300px;
+        margin: 30px auto;
+      }
+      .button {
+        display: block;
+        text-decoration: none;
+        color: black;
+        background-color: #405468;
+        margin: 15px 25px;
+        text-align: center;
+        font-size: 22px;
+        padding: 10px 20px;
+        border-radius: 7px;
+      }
+      .button:hover {
+        background-color: lightgrey;
+      }
+      
+      h2 {
+        margin-left: 60px;
+      }
+      ul {
+        list-style-type: none;
+      }
+      .filter_container {
+        display: flex;
+        margin: 20px;
+      }
+      .filter_container label {
+        margin: 20px;
+      }
+      .filter_button {
+        margin-left: 45px;       
+        font-size: 14px;
+        border-radius: 4px;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div>Задача 8</div>
+      <p>
+        Дано список автомобілів (марка, рік випуску, ціна). Сформувати елементи для фільтрування з використанням випадаючого списку (контент цих випадаючих списків сформувати у залежності від переданого списку).
+      </p>
+      <p>Відповідь до задачі:</p>
+    </div>
+    <div class="content">
+      <div id="app">
+        <div>
+          <h2>Фільтр пошуку</h2>
+          <div class="filter_container">
+            <label>
+              Марка
+              <select v-model="chosenBrand">
+                <option
+                  v-for="car in carsList"
+                  :key="car.id"
+                  :value="car.manufacturer"
+                >
+                  {{ car.manufacturer}}
+                </option>
+              </select>
+            </label>
+            <label>
+              Рік випуску автомобіля
+              <select v-model="chosenYear">
+                <option v-for="car in carsList" :key="car.id" :value="car.year">
+                  {{ car.year }}
+                </option>
+              </select>
+            </label>
+            <button class="filter_button" @click="resetFilter">Скинути фільтри</button>
+          </div>
+          <div >
+            <ul>
+              <li v-for="(car,index) in filteredCarsList" :key="car.id">
+                <span
+                  >{{ car.manufacturer }} {{ car.year }}рік - {{ car.price
+                  }}</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  
+      <script>
+        const { createApp } = Vue
+  
+        const app = createApp({
+          data() {
+          return {
+            carsList: [
+              { manufacturer: 'Volkswagen', year: 2019, price: 90000, id: 1 },
+              { manufacturer: 'Nissan', year: 2011, price: 10000, id: 2 },
+              { manufacturer: 'Honda', year: 2021, price: 80000, id: 3 },
+              { manufacturer: 'BMW', year: 2020, price: 120000, id: 4 },
+              { manufacturer: 'Mitsubishi', year: 2018, price: 110000, id: 5 },
+              { manufacturer: 'Toyota', year: 2021, price: 100000, id: 6 },
+              { manufacturer: 'Renault', year: 2017, price: 70000, id: 7 },
+              { manufacturer: 'Citroen', year: 2016, price: 60000, id: 8 },
+              { manufacturer: 'Hyundai', year: 2014, price: 40000, id: 9 },
+              { manufacturer: 'Audi', year: 2010, price: 500000, id: 10 },
+              { manufacturer: 'Kia', year: 2013, price: 30000, id: 11 },
+              { manufacturer: 'Skoda', year: 2012, price: 20000, id: 12 },
+              {
+                manufacturer: 'Mercedes-Benz',
+                year: 2021,
+                price: 150000,
+                id: 13,
+              },
+            ],
+            chosenBrand: null,
+            chosenYear: null,
+          }
+        },
+        computed: {
+          filteredCarsList() {
+            let filteredList = this.carsList
+            if (this.chosenBrand) {
+              filteredList = filteredList.filter(
+                (car) => car.manufacturer === this.chosenBrand
+              )
+            }
+            if (this.chosenYear) {
+              filteredList = filteredList.filter(
+                (car) => car.year === this.chosenYear
+              )
+            }
+            return filteredList
+          },
+        },
+        methods: {
+          resetFilter() {
+            this.chosenBrand = null
+            this.chosenYear = null
+          },
+        },
+      }).mount('#app')
+      </script>
+       <div class="btn">
+        <a class="button" href="./index.html">На головну</a>
+      </div>
+  </body>
+</html>

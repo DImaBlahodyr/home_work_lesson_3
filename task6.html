@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 6</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      body {
+        background-color: #405468;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+      }
+      .header {
+        max-width: 1425px;
+        margin: 0 auto;
+        background-color: #00bd82;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 30px;
+      }
+      .header > p {
+        font-size: 24px;
+      }
+      .content {
+        max-width: 600px;
+        margin: 10px auto;
+        background-color: #00bd82;
+        border-radius: 10px;
+        text-align: center;
+        padding: 5px 0;
+        font-size: 24px;
+      }
+      .btn {
+        max-width: 300px;
+        margin: 30px auto;
+      }
+      .button {
+        display: block;
+        text-decoration: none;
+        color: black;
+        background-color: #405468;
+        margin: 15px 25px;
+        text-align: center;
+        font-size: 22px;
+        padding: 10px 20px;
+        border-radius: 7px;
+      }
+      .button:hover {
+        background-color: lightgrey;
+      }
+
+      .table {
+        display: flex;
+        justify-content: space-around;
+      }
+      .column_list {
+        border: 2px solid black;
+        padding: 10px;
+        font-size: 28px;
+        padding: 0px 60px;
+      }
+      .result_list {
+        align-items: center;
+        padding: 10px;
+        font-size: 28px;
+      }
+
+      .addButton {
+        text-align: center;
+        margin: 20px 0px;
+      }
+      .selected {
+        background-color: rgb(15, 28, 165);
+        color: #fff;
+      }
+      h2 {
+        text-align: center;
+      }
+      button {
+        background-color: gray;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div>Задача 6</div>
+      <p>
+        Пари для танців. Поступово вибираємо хлопця, дівчину і додаємо у обрані
+        пари. Пару можна видалити. Поки не вибрано хлопця і дівчину кнопка
+        «Додати» заблокована. Якщо не вистачає хлопців або дівчат вибір також
+        блокується.
+      </p>
+      <p>Відповідь до задачі:</p>
+    </div>
+    <div class="content">
+      <div id="app">
+        <div class="table">
+          <div class="">
+            <h2>Хлопці</h2>
+            <div class="column_list">
+              <p
+                v-for="boy in boysList"
+                :key="boy.id"
+                :class="{selected: chosenBoy === boy}"
+                @click="chooseBoy(boy)"
+              >
+                {{boy.name}}
+              </p>
+            </div>
+          </div>
+          <div class="">
+            <h2>Дівчата</h2>
+            <div class="column_list">
+              <p
+                v-for="girl in girlsList"
+                :key="girl.id"
+                :class="{selected: chosenGirl === girl}"
+                @click="chooseGirl(girl)"
+              >
+                {{girl.name}}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="addButton"
+          @click="createCouple"
+          :disabled="!unlockedButton"
+        >
+          <button>Додати пару</button>
+        </div>
+        <div>
+          <h2>Обрані пари</h2>
+          <div class="result_list">
+            <p v-for="(couple, index) in coupleList" :key="index">
+              {{couple.boyName}} - {{couple.girlName}}
+              <button @click="removeCouple(index)">Видалити пару</button>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const { createApp } = Vue
+
+        const app = createApp({
+          data() {
+            return {
+              boysList: [
+                { name: 'Сергій', id: 1 },
+                { name: 'Андрій', id: 2 },
+                { name: 'Євген', id: 3 },
+                { name: 'Дмитро', id: 4 },
+                { name: 'Максим', id: 5 },
+              ],
+              girlsList: [
+                { name: 'Анастасія', id: 1 },
+                { name: 'Вікторія', id: 2 },
+                { name: 'Маргарита', id: 3 },
+                { name: 'Олена', id: 4 },
+                { name: "Дар'я", id: 5 },
+                { name: 'Марина', id: 6 },
+                { name: 'Алла', id: 7 },
+              ],
+              chosenBoy: null,
+              chosenGirl: null,
+              coupleList: [],
+            }
+          },
+          computed: {
+            unlockedButton() {
+              return (
+                this.chosenBoy &&
+                this.chosenGirl &&
+                this.boysList.length > 0 &&
+                this.girlsList.length > 0
+              )
+            },
+          },
+          methods: {
+            chooseBoy(boy) {
+              this.chosenBoy = boy
+            },
+            chooseGirl(girl) {
+              this.chosenGirl = girl
+            },
+            createCouple() {
+              if (this.chosenBoy && this.chosenGirl) {
+                this.coupleList.push({
+                  boyName: this.chosenBoy.name,
+                  girlName: this.chosenGirl.name,
+                })
+                let boyIndex = this.boysList.findIndex(
+                  (boy) => boy.id === this.chosenBoy.id
+                )
+                let girlIndex = this.girlsList.findIndex(
+                  (girl) => girl.id === this.chosenGirl.id
+                )
+                if (boyIndex != -1) {
+                  this.boysList.splice(boyIndex, 1)
+                }
+                if (girlIndex != -1) {
+                  this.girlsList.splice(girlIndex, 1)
+                }
+                this.chosenBoy = null
+                this.chosenGirl = null
+              }
+            },
+            removeCouple(index) {
+              let removedCouple = this.coupleList[index]
+              this.coupleList.splice(index, 1)
+              let boyName = removedCouple.boyName
+              let girlName = removedCouple.girlName
+              this.boysList.push({
+                name: boyName,
+                id: this.boysList.length + 1,
+              })
+              this.girlsList.push({
+                name: girlName,
+                id: this.girlsList.length + 1,
+              })
+            },
+          },
+        }).mount('#app')
+      </script>
+      <div class="btn">
+        <a class="button" href="./index.html">На головну</a>
+      </div>
+    </div>
+  </body>
+</html>
